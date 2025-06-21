@@ -1,7 +1,7 @@
 [build]
   command = "npm install && npm run build"
   publish = ".next"
-  edge_functions = true
+  edge_functions = "edge-functions"
 
 [build.environment]
   NEXT_PUBLIC_SITE_URL = "https://ai-prompt-tutor-image.netlify.app"
@@ -16,8 +16,13 @@
     experimentalBundling = true
 
 [[edge_functions]]
+  included_files = ["src/lib/**"]
   function = "next-server"
   path = "/*"
+
+[functions]
+  directory = "edge-functions"
+  external_node_modules = ["@netlify/functions"]
 
 [functions]
   included_files = ["src/lib/**"]
