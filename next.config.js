@@ -1,8 +1,13 @@
 /** @type {import('next').NextConfig} */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    unoptimized: true,
-    domains: ['**']
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*',
+      },
+    ],
   }
 }
 

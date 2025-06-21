@@ -1,15 +1,31 @@
 [build]
-  command = "npm run build"
+  command = "next build"
   publish = ".next"
-  functions = "netlify/functions"
 
 [build.environment]
+  NEXT_USE_MIDDLEWARE = "0"
   NODE_VERSION = "18"
-  NEXT_TELEMETRY_DISABLED = "1"
-  NEXT_PUBLIC_SITE_URL = "https://ai-prompt-tutor-image.netlify.app"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+  [plugins.inputs]
+    useAppDir = true
+
+[[redirects]]
+  from = "/_next/*"
+  to = "/_next/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/server"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
 
 [[redirects]]
   from = "/api/*"
