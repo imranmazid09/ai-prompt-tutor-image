@@ -8,7 +8,7 @@ import FeedbackDisplay from '@/components/FeedbackDisplay';
 import Footer from '@/components/Footer';
 import Toast from '@/components/Toast';
 import LoadingSpinner from '@/components/LoadingSpinner';
-import { PromptElement, PromptFeedback } from '@/types';
+import { PromptElement, PromptFeedback, PromptHistory } from '@/types';
 import { getPromptHistory, savePromptToHistory } from '@/lib/prompt-utils';
 import AnalyticsDashboard from '@/components/AnalyticsDashboard';
 import ExamplePrompts from '@/components/ExamplePrompts';
