@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { ElementFeedback, PromptElement, PromptFeedback } from "@/types";
 
 if (!process.env.GEMINI_API_KEY) {
   throw new Error("GEMINI_API_KEY is not set in environment variables");
@@ -14,7 +15,7 @@ export interface ElementCriteria {
   scoringCriteria: string[];
 }
 
-const promptElements: Record<string, ElementCriteria> = {
+const promptElements: Record<keyof PromptElement, ElementCriteria> = {
   subject: {
     description: "The main focus or subject of the image",
     strongExample: "a majestic silver dragon with intricate scale patterns",
@@ -29,112 +30,113 @@ const promptElements: Record<string, ElementCriteria> = {
   artisticStyle: {
     description: "The artistic approach or medium",
     strongExample: "detailed digital art in the style of concept art",
-    weakExample: "nice looking",
+    weakExample: "art",
     scoringCriteria: [
       "Clear artistic medium",
       "Specific style reference",
-      "Consistency with subject",
-      "Technical specificity"
+      "Appropriate for subject",
+      "Visual coherence"
     ]
   },
   details: {
     description: "Specific characteristics and attributes",
-    strongExample: "scales shimmer with an iridescent blue-green hue, worn battle scars visible",
-    weakExample: "has scales",
+    strongExample: "scales gleaming with iridescent colors, ethereal wisps of steam rising",
+    weakExample: "looks cool",
     scoringCriteria: [
       "Level of detail",
-      "Sensory descriptions",
-      "Unique characteristics",
-      "Coherent details"
+      "Visual interest",
+      "Sensory language",
+      "Coherent with subject"
     ]
   },
   composition: {
-    description: "How the image is framed and composed",
-    strongExample: "dramatic low-angle view against storm clouds, rule of thirds composition",
+    description: "How the image is framed and arranged",
+    strongExample: "dramatic low angle view with the subject centered against a stormy sky",
     weakExample: "centered",
     scoringCriteria: [
-      "Camera angle specified",
-      "Framing description",
-      "Compositional rules",
-      "Scene context"
+      "Camera angle specification",
+      "Scene arrangement",
+      "Depth and perspective",
+      "Overall composition clarity"
     ]
   },
   lighting: {
     description: "Light conditions and effects",
-    strongExample: "backlit by golden sunset light with dramatic shadows",
+    strongExample: "backlit by a golden sunset with dramatic shadows",
     weakExample: "bright",
     scoringCriteria: [
-      "Light source specified",
-      "Lighting quality",
-      "Shadow description",
-      "Mood enhancement"
+      "Light source specification",
+      "Mood enhancement",
+      "Shadow consideration",
+      "Time of day/atmosphere"
     ]
   },
   color: {
     description: "Color palette and scheme",
-    strongExample: "cool teal and silver palette with golden accent highlights",
+    strongExample: "rich jewel tones with emerald green highlights and deep purple shadows",
     weakExample: "colorful",
     scoringCriteria: [
-      "Specific colors named",
-      "Color relationships",
-      "Mood appropriate",
-      "Color harmony"
+      "Color palette specification",
+      "Mood appropriateness",
+      "Color harmony",
+      "Visual impact"
     ]
   }
 };
 
 async function evaluatePromptElement(
-  element: string,
+  element: keyof PromptElement,
   content: string,
   criteria: ElementCriteria
-) {
-  const prompt = `You are an AI image prompt writing tutor. Evaluate the following ${element} description for an AI image generation prompt.
+): Promise<ElementFeedback> {
+  const prompt = `
+    You are an AI art prompt evaluation expert. Analyze this ${element} prompt element:
+    "${content}"
+    
+    Consider these criteria:
+    ${criteria.scoringCriteria.join("\n")}
+    
+    Return a JSON object with:
+    1. score (0-100)
+    2. feedback (constructive critique)
+    3. examples object with:
+       - strong (an improved version)
+       - weak (a weaker version for contrast)
+    
+    Focus on actionable feedback and specific improvements.
+  `;
 
-Content to evaluate: "${content}"
-
-Criteria:
-${criteria.scoringCriteria.map(c => "- " + c).join("\n")}
-
-Strong example: "${criteria.strongExample}"
-Weak example: "${criteria.weakExample}"
-
-Provide a JSON response with:
-1. A score from 0-100 based on the criteria
-2. Specific, constructive feedback on how to improve
-3. A strong example similar to but different from the provided one
-4. A weak example demonstrating common mistakes
-
-Format:
-{
-  "score": number,
-  "feedback": "string",
-  "examples": {
-    "strong": "string",
-    "weak": "string"
-  }
-}`;
-
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  const text = response.text();
-  
   try {
-    return JSON.parse(text);
+    const result = await model.generateContent(prompt);
+    const response = result.response;
+    const text = response.text();
+    
+    // Find the JSON object in the response
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error("No valid JSON found in response");
+    }
+    
+    const feedback = JSON.parse(jsonMatch[0]) as ElementFeedback;
+    return feedback;
   } catch (error) {
-    console.error("Failed to parse Gemini response:", text);
-    throw new Error("Failed to parse evaluation response");
+    console.error(`Error evaluating ${element}:`, error);
+    throw new Error(`Failed to evaluate ${element} prompt element`);
   }
 }
 
-export async function evaluateFullPrompt(promptData: Record<string, string>) {
+export async function evaluatePrompt(promptData: Record<keyof PromptElement, string>): Promise<PromptFeedback> {
   const evaluations = await Promise.all(
     Object.entries(promptData).map(async ([element, content]) => {
-      const criteria = promptElements[element];
-      return [element, await evaluatePromptElement(element, content, criteria)];
+      const criteria = promptElements[element as keyof PromptElement];
+      return [element, await evaluatePromptElement(element as keyof PromptElement, content, criteria)];
     })
   );
 
-  const results = Object.fromEntries(evaluations);
+  const results = Object.fromEntries(evaluations) as {
+    [K in keyof PromptElement]: ElementFeedback;
+  };
+  
   const totalScore = Math.round(
     Object.values(results).reduce((sum, r) => sum + r.score, 0) / 
     Object.keys(results).length
