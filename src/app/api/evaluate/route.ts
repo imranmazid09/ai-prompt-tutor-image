@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { evaluateFullPrompt } from "@/lib/gemini";
+import { evaluatePrompt } from "@/lib/gemini";
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const evaluation = await evaluateFullPrompt(promptData);
+    const evaluation = await evaluatePrompt(promptData);
     
     return new Response(JSON.stringify(evaluation), {
       headers: { "Content-Type": "application/json" },
