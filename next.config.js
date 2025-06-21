@@ -1,25 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  target: 'server',
+  output: 'export',
   images: {
     unoptimized: true,
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
+    domains: ['**'],
   },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        fs: false,
-        net: false,
-        tls: false,
-      }
-    }
-    return config
-  }
+  env: {
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+  },
+  trailingSlash: true,
 }
 
 module.exports = nextConfig
