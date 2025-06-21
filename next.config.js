@@ -9,11 +9,7 @@ const nextConfig = {
         hostname: '**',
       },
     ],
-  },
-  // Enable static export while maintaining API routes
-  experimental: {
-    serverActions: true,
-  },
+  }
 }
 
 module.exports = nextConfig
