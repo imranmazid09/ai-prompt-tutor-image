@@ -1,6 +1,6 @@
 [build]
   command = "npm run build"
-  publish = "out"
+  publish = ".next"
 
 [build.environment]
   NEXT_PUBLIC_SITE_URL = "https://ai-prompt-tutor-image.netlify.app"
@@ -12,8 +12,6 @@
 
 [functions]
   node_bundler = "esbuild"
-
-[functions]
   directory = "edge-functions"
   included_files = ["src/lib/**"]
   external_node_modules = ["@netlify/functions"]
