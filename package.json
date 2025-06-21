@@ -4,10 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run clean && next build",
+    "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "clean": "rimraf .next out"
+    "lint": "next lint"
   },
   "dependencies": {
     "@google/generative-ai": "^0.1.0",
