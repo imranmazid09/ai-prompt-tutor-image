@@ -3,18 +3,10 @@
   publish = ".next"
 
 [build.environment]
-  NEXT_PUBLIC_SITE_URL = "https://ai-prompt-tutor-image.netlify.app"
   NODE_VERSION = "18"
-  NEXT_TELEMETRY_DISABLED = "1"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-[functions]
-  node_bundler = "esbuild"
-  directory = "edge-functions"
-  included_files = ["src/lib/**"]
-  external_node_modules = ["@netlify/functions"]
 
 [[redirects]]
   from = "/api/*"
