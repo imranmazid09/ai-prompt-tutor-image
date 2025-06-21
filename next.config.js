@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  trailingSlash: false,
   images: {
     remotePatterns: [
       {
@@ -8,10 +9,12 @@ const nextConfig = {
       },
     ],
   },
-  // Add proper handling for serverless functions
+  // Ensure proper error handling and dynamic imports
+  experimental: {
+    serverActions: true,
+  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      // Don't resolve 'fs' module on the client to prevent this error on build --> Error: Can't resolve 'fs'
       config.resolve.fallback = {
         fs: false,
         net: false,
