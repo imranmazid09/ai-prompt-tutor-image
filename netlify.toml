@@ -7,9 +7,6 @@
   NODE_VERSION = "18"
   NEXT_PUBLIC_RUNTIME = "edge"
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
 [functions]
   included_files = ["src/lib/**"]
 
