@@ -30,7 +30,6 @@ export interface PromptHistory {
   feedback: PromptFeedback;
   imageUrl?: string;
 }
-}
 
 export interface PromptAnalytics {
   averageScore: number;
