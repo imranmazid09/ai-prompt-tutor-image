@@ -21,6 +21,7 @@ interface ErrorMessage {
 
 export default function Home() {
   const [feedback, setFeedback] = useState<PromptFeedback | null>(null);
+  const [currentPrompt, setCurrentPrompt] = useState<PromptElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [error, setError] = useState<ErrorMessage | null>(null);
@@ -35,7 +36,8 @@ export default function Home() {
   const handlePromptSubmit = async (promptElements: PromptElement) => {
     setIsLoading(true);
     setError(null);
-    
+    setCurrentPrompt(promptElements);
+
     try {
       const response = await fetch('/api/evaluate', {
         method: 'POST',
@@ -118,8 +120,7 @@ export default function Home() {
 
   const handlePromptSelect = (prompt: PromptElement) => {
     setShowExamples(false);
-    // Fill the form with the selected prompt
-    // The PromptInput component will need to be updated to accept initialValues
+    setCurrentPrompt(prompt);
   };
 
   return (
@@ -150,6 +151,7 @@ export default function Home() {
           )}
           <FeedbackDisplay 
             feedback={feedback}
+            prompt={currentPrompt}
             onGenerateImage={handleGenerateImage}
             imageUrl={imageUrl}
             isGeneratingImage={isGeneratingImage}

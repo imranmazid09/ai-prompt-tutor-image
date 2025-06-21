@@ -1,8 +1,9 @@
-import { PromptFeedback } from "@/types";
+import { PromptFeedback, PromptElement } from "@/types";
 import ImageDisplay from "./ImageDisplay";
 
 interface FeedbackDisplayProps {
   feedback: PromptFeedback | null;
+  prompt: PromptElement | null;
   onGenerateImage: () => void;
   imageUrl: string | null;
   isGeneratingImage: boolean;
@@ -10,11 +11,12 @@ interface FeedbackDisplayProps {
 
 export default function FeedbackDisplay({ 
   feedback, 
+  prompt,
   onGenerateImage, 
   imageUrl,
   isGeneratingImage
 }: FeedbackDisplayProps) {
-  if (!feedback) return null;
+  if (!feedback || !prompt) return null;
 
   const canGenerateImage = feedback.totalScore >= 80;
 
@@ -80,7 +82,7 @@ export default function FeedbackDisplay({
             <ImageDisplay
               imageUrl={imageUrl}
               isLoading={isGeneratingImage}
-              prompt={feedback.elements.subject.content}
+              prompt={prompt.subject}
             />
           </div>
         ) : (
