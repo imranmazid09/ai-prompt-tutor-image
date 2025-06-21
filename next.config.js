@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  trailingSlash: false,
   images: {
     remotePatterns: [
       {
@@ -8,10 +7,6 @@ const nextConfig = {
         hostname: '**',
       },
     ],
-  },
-  // Ensure proper error handling and dynamic imports
-  experimental: {
-    serverActions: true,
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
