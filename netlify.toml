@@ -1,7 +1,6 @@
 [build]
   command = "npm install && npm run build"
   publish = ".next"
-  edge_functions = "edge-functions"
 
 [build.environment]
   NEXT_PUBLIC_SITE_URL = "https://ai-prompt-tutor-image.netlify.app"
@@ -11,21 +10,11 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-  [plugins.inputs]
-    isProprietary = true
-    experimentalBundling = true
-
-[[edge_functions]]
-  included_files = ["src/lib/**"]
-  function = "next-server"
-  path = "/*"
 
 [functions]
   directory = "edge-functions"
-  external_node_modules = ["@netlify/functions"]
-
-[functions]
   included_files = ["src/lib/**"]
+  external_node_modules = ["@netlify/functions"]
 
 [[redirects]]
   from = "/api/*"
@@ -37,8 +26,6 @@
   to = "/.netlify/functions/nextjs-server"
   status = 200
   force = true
-
-[build.processing]
   skip_processing = false
 [build.processing.css]
   bundle = true
