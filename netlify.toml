@@ -1,7 +1,6 @@
 [build]
   command = "npm run build"
   publish = ".next"
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF ./"
 
 [build.environment]
   NODE_VERSION = "18"
@@ -11,19 +10,10 @@
   package = "@netlify/plugin-nextjs"
 
 [[redirects]]
-  from = "/api/*"
+  from = "/*"
   to = "/.netlify/functions/nextjs-server"
   status = 200
-
-[[redirects]]
-  from = "/_next/static/*"
-  to = "/_next/static/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+  force = true
 
 [[redirects]]
   from = "/api/*"
