@@ -6,9 +6,13 @@
   NEXT_PUBLIC_SITE_URL = "https://ai-prompt-tutor-image.netlify.app"
   NODE_VERSION = "18"
   NEXT_PUBLIC_RUNTIME = "edge"
+  NEXT_TELEMETRY_DISABLED = "1"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+[build.processing.html]
+  pretty_urls = true
 
 [functions]
   included_files = ["src/lib/**"]
