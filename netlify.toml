@@ -9,8 +9,6 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-  [plugins.inputs]
-    followSymlinks = true
 
 [[redirects]]
   from = "/_next/static/*"
